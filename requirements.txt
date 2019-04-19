@@ -6,3 +6,6 @@ codecov
 coverage
 requests==2.21.0
 requests-mock==1.5.2
+django-cors-headers
+firebase-admin
+flake8

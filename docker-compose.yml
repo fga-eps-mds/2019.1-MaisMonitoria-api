@@ -9,3 +9,10 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+    networks:
+      - api-backend
+
+networks:
+  api-backend:
+    external:
+      name: api-backend
