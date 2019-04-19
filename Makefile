@@ -8,6 +8,7 @@ tests:
 	docker exec api_gateway bash -c "bash run-tests.sh"
 
 unit-tests:
+	docker-compose -f ./composes/${file} build
 	docker-compose -f ./composes/${file} up -d
 	echo "Running Unit Tests"
 	docker exec api_gateway bash -c "bash run-tests.sh"
