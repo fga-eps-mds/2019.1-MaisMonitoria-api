@@ -15,5 +15,4 @@ run-dc-tests:
 unit-tests:
 	echo "Running Unit Tests"
 	docker exec api_gateway bash -c "bash run-tests.sh"
-	docker-compose -f docker-compose.yml down
-	docker-compose -f docker-compose.yml rm -f -s
+	

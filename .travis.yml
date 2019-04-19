@@ -27,5 +27,5 @@ jobs:
         - make unit-tests file=dc-unit-test.yml
         - docker-compose exec api_gateway codecov -t ${CODECOV_TOKEN}
         - docker-compose exec api_gateway flake8
-after_success:
-  - docker-compose down
+        - docker-compose -f docker-compose.yml down
+	      - docker-compose -f docker-compose.yml rm -f -s
