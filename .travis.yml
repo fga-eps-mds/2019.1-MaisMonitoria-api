@@ -1,9 +1,5 @@
 sudo: required
 
-language: python
-python:
-  - "3.6"
-
 services:
   - docker
 
@@ -27,6 +23,7 @@ jobs:
     - stage: "Unit test"
       name: "Unit test"
       script:
+        - make run-dc-tests file=dc-unit-test.yml
         - make unit-tests file=dc-unit-test.yml
         - docker-compose exec api_gateway codecov -t ${CODECOV_TOKEN}
         - docker-compose exec api_gateway flake8
