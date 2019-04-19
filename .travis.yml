@@ -27,8 +27,7 @@ jobs:
     - stage: "Unit test"
       name: "Unit test"
       script:
-        - docker-compose up -d
-        - docker-compose exec api_gateway sh run-test.sh
+        - make unit-tests file=dc-unit-test.yml
         - docker-compose exec api_gateway codecov -t ${CODECOV_TOKEN}
         - docker-compose exec api_gateway flake8
 after_success:
