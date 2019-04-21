@@ -23,3 +23,9 @@ Requisitos para conseguir rodar o projeto.
 > make build
 5. Dê o run no projeto
 > make run
+
+## Outros repositorios
+* [+Monitoria DOCS](https://github.com/fga-eps-mds/2019.1-MaisMonitoria)
+* [+Monitoria API Monitorias](https://github.com/fga-eps-mds/2019.1-MaisMonitoria-ApiMonitorias)
+* [+Monitoria Front-End](https://github.com/fga-eps-mds/2019.1-MaisMonitoria-FrontEnd)
+
