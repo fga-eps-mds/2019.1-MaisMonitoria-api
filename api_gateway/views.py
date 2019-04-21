@@ -11,6 +11,7 @@ from rest_framework.status import (
 from rest_framework.response import Response
 import requests
 import json
+import os
 
 
 import firebase_admin
@@ -22,15 +23,33 @@ from firebase_admin import credentials
 #default_app = firebase_admin.initialize_app(cred)
 
 
-@api_view(http_method_names=['GET'])
-def get_users(request):
+@api_view(["GET"])
+def all_tutoring(request):
     ## Verificação do token
     #decoded_token = auth.verify_id_token(request.data['access_token'])
     #uid_json = {"id": decoded_token['uid'], "name": decoded_token['name']}
     
     #id = json.dumps(uid_json)
     try:
-        response = requests.get('http://api-monitoria:8001/user/')
+        response = requests.get('http://api-monitoria:8001' + '/tutoring/')
+        try:
+            respose_json = response.json()
+            return Response(data=respose_json, status=HTTP_200_OK)
+        except:
+            Response(response)
+    except:
+        return Response({'error': 'Error no servidor'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def get_tutoring(request):
+    ## Verificação do token
+    #decoded_token = auth.verify_id_token(request.data['access_token'])
+    #uid_json = {"id": decoded_token['uid'], "name": decoded_token['name']}
+    
+    #id = json.dumps(uid_json)
+    try:
+        response = requests.get('http://api-monitoria:8001' + '/tutoring/'+ 
+                                    str(request.data.get("id_tutoring_session")))
         try:
             respose_json = response.json()
             return Response(data=respose_json, status=HTTP_200_OK)
