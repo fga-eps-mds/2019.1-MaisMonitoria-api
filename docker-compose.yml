@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api_gateway:
-    container_name: api_gateway
+    container_name: api-gateway
     build: .
     command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
