@@ -18,11 +18,12 @@ from django.urls import path
 from api_gateway.views import all_tutoring
 from api_gateway.views import get_tutoring
 from api_gateway.views import delete_tutoring
+from api_gateway.views import create_tutoring
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('all_tutoring/', all_tutoring),
     path('get_tutoring/', get_tutoring),
-    path('delete_tutoring/', delete_tutoring)
-
+    path('delete_tutoring/', delete_tutoring),
+    path('create_tutoring/', create_tutoring)
 ]

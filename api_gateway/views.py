@@ -71,3 +71,20 @@ def delete_tutoring(request):
         return Response(data={"Success":"Excluido com sucesso"}, status=HTTP_200_OK)
     except:
         return Response({'error': 'Error no servidor'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def create_tutoring(request):
+    ## Verificação do token
+    #decoded_token = auth.verify_id_token(request.data['access_token'])
+    #uid_json = {"id": decoded_token['uid'], "name": decoded_token['name']}
+    
+    #id = json.dumps(uid_json)
+    try:
+        response = requests.post('http://api-monitoria:8001' + '/tutoring/', data=request.data)
+        try:
+            respose_json = response.json()
+            return Response(data=respose_json, status=HTTP_200_OK)
+        except:
+            Response(response)
+    except:
+        return Response({'error': 'Error no servidor'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
