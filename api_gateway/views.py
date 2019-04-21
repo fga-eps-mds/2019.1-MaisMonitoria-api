@@ -49,7 +49,7 @@ def get_tutoring(request):
     #id = json.dumps(uid_json)
     try:
         response = requests.get('http://api-monitoria:8001' + '/tutoring/'+ 
-                                    str(request.data.get("id_tutoring_session")))
+                                    str(request.data.get("id_tutoring_session"))+'/')
         try:
             respose_json = response.json()
             return Response(data=respose_json, status=HTTP_200_OK)
@@ -67,7 +67,7 @@ def delete_tutoring(request):
     #id = json.dumps(uid_json)
     try:
         response = requests.delete('http://api-monitoria:8001' + '/tutoring/'+ 
-                                    str(request.data.get("id_tutoring_session")))
+                                    str(request.data.get("id_tutoring_session"))+'/')
         return Response({"Success":"Excluido com sucesso"}, status=HTTP_200_OK)
     except:
         return Response({'error': 'Error no servidor'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
@@ -98,7 +98,7 @@ def update_tutoring(request):
     #id = json.dumps(uid_json)
     try:
         response = requests.put('http://api-monitoria:8001' + '/tutoring/'+
-                            str(request.data.get("id_tutoring_session")), data=request.data)
+                            str(request.data.get("id_tutoring_session"))+'/', data=request.data)
 
         return Response({"Success":"Alterado com sucesso"}, status=HTTP_200_OK)
     except:
