@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  api_gateway:
+    container_name: api-gateway
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    networks:
+      - api-backend
+
+networks:
+  api-backend:
+    external:
+      name: api-backend
