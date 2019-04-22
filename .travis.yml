@@ -25,7 +25,7 @@ jobs:
       script:
         - make run-dc-tests
         - make unit-tests
-        - docker-compose exec api_gateway flake8
+        #- docker-compose exec api_gateway flake8
         - docker-compose exec api_gateway codecov -t ${CODECOV_TOKEN}
         
 after_success:
