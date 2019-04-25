@@ -11,10 +11,10 @@ tests:
 	docker exec api_gateway bash -c "bash run-tests.sh"
 
 run-tests:
-	docker-compose exec api_monitoria coverage run manage.py test
+	docker-compose exec api_gateway coverage run manage.py test
 
 cov-tests:
-	docker-compose exec api_monitoria coverage report -m
+	docker-compose exec api_gateway coverage report -m
 
 run-dc-tests:
 	docker network create api-backend 
