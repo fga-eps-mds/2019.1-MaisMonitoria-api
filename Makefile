@@ -6,10 +6,7 @@ run-d:
 
 down:
 	docker-compose -f docker-compose.yml down
-
-tests:
-	docker exec api_gateway bash -c "bash run-tests.sh"
-
+	
 run-tests:
 	docker-compose exec api_gateway coverage run manage.py test
 

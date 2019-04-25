@@ -13,22 +13,22 @@ import requests
 import json
 import os
 
-
+import ast
 import firebase_admin
 from firebase_admin import auth
 from firebase_admin import credentials
 
-# Initialize the default app
-#cred = credentials.Certificate('serviceAccountKey.json')
-#default_app = firebase_admin.initialize_app(cred)
+x = os.getenv('FIREBASE_KEY')
+x = ast.literal_eval(x)
+cred = credentials.Certificate(x)
+default_app = firebase_admin.initialize_app(cred)
 
 @api_view(["POST"])
 def get_user(request):
     ## Verificação do token
-    #decoded_token = auth.verify_id_token(request.data['access_token'])
-    #uid_json = {"id": decoded_token['uid'], "name": decoded_token['name']}
-    
-    #id = json.dumps(uid_json)
+    decoded_token = auth.verify_id_token(request.data['access_token'])
+    uid_json = {"id": decoded_token['uid']}
+
     try:
         response = requests.get('http://api-monitoria:8001' + '/user/'+ 
                                     str(request.data.get("user_account_id"))+'/')
