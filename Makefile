@@ -1,6 +1,3 @@
-build:
-	docker-compose -f docker-compose.yml build
-
 run:
 	docker-compose -f docker-compose.yml up
 
@@ -11,5 +8,15 @@ down:
 	docker-compose -f docker-compose.yml down
 
 tests:
-	docker-compose exec api_gateway py.test --cov=.
-	
+	docker exec api_gateway bash -c "bash run-tests.sh"
+
+run-tests:
+	docker-compose exec api_monitoria coverage run manage.py test
+
+cov-tests:
+	docker-compose exec api_monitoria coverage report -m
+
+run-dc-tests:
+	docker network create api-backend 
+	docker-compose -f docker-compose.yml build
+	docker-compose -f docker-compose.yml up -d
