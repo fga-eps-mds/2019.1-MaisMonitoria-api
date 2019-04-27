@@ -69,31 +69,25 @@ class MonitoringRedirectTests(APITestCase):
         self.assertEqual(response.status_code, status)
         self.assertEqual(response.data ,data  )
         
+    @requests_mock.Mocker(kw= 'mock')    
+    def teste_delete_tutoring(self, **kwargs):
+        id= self.valid_payload
+        api_url = '/delete_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/1/'
+        data = {"Success":"Excluido com sucesso"}
+        status = HTTP_200_OK
 
+        kwargs['mock'].delete(request_url, text= json.dumps(data))
+        response = self.client.post(api_url, id)
+        self.assertEqual(response.status_code, status)
+        self.assertEqual(response.data, data)
 
-    # @requests_mock.Mocker(kw='mock')
-    # def test_all_tutoring(self, **kwargs):
-    #     api_url = '/tutoring/'
-    #     request_url = 'http://api-monitoria:8001/tutoring/'
-    #     status = HTTP_200_OK
-    #     data = {"Teste": "teste"}
-
-    #     kwargs['mock'].get(request_url, text=json.dumps(data))
-
-    #     response = self.client.get(api_url)
-
-    #     self.assertEqual(response.status_code, status)
-    #     self.assertEqual(response.data['Teste'], "teste")
-
-    # def test_error_all_tutoring(self, **kwargs):
-    #     api_url = '/all_tutoring/'
-    #     status = HTTP_500_INTERNAL_SERVER_ERROR
-    #     data = {'error': 'Error no servidor'}
-
-    #     response = self.client.get(api_url)
-
-    #     self.assertEqual(response.status_code, status)
-    #     self.assertEqual(response.data, data)
-
-
-
+    def teste_error_delete_tutoring(self, *kwargs):
+        id= self.valid_payload
+        api_url = '/delete_tutoring/'
+        data = {'error': 'Error no servidor'}
+        status =HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, id)
+        self.assertEqual(response.status_code, status)
+        self.assertEqual(response.data, data)
+  
