@@ -82,7 +82,7 @@ class MonitoringRedirectTests(APITestCase):
         self.assertEqual(response.status_code, status)
         self.assertEqual(response.data, data)
 
-    def teste_error_delete_tutoring(self, *kwargs):
+    def teste_error_delete_tutoring(self, **kwargs):
         id= self.valid_payload
         api_url = '/delete_tutoring/'
         data = {'error': 'Error no servidor'}
