@@ -113,4 +113,26 @@ class MonitoringRedirectTests(APITestCase):
         status =HTTP_500_INTERNAL_SERVER_ERROR
         response = self.client.post(api_url, id)
         self.assertEqual(response.status_code, status)
+        self.assertEqual(response.data, data)  
+
+    @requests_mock.Mocker(kw= 'mock')    
+    def teste_update_tutoring(self, **kwargs):
+        id= self.valid_payload
+        api_url = '/update_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/1/'
+        data = {"Success":"Alterado com sucesso"}
+        status = HTTP_200_OK
+        
+        kwargs['mock'].put(request_url, text= json.dumps(data))
+        response = self.client.post(api_url, id)
+        self.assertEqual(response.status_code, status)
+        self.assertEqual(response.data, data)
+
+    def teste_error_update_tutoring(self, **kwargs):
+        id= self.valid_payload
+        api_url = '/delete_tutoring/'
+        data = {'error': 'Error no servidor'}
+        status =HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, id)
+        self.assertEqual(response.status_code, status)
         self.assertEqual(response.data, data)
