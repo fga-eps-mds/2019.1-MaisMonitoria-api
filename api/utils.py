@@ -37,9 +37,13 @@ def registry_auth(token):
         response = {'is_auth': False}
         return response
 
-def get_request(url, route, param):
+def get_request(url, route, param=None):
     try:
-        response = requests.get(url + route + param + '/')
+        if param is not None:
+            request_url = url + route + param + '/'
+        else:
+            request_url = url + route
+        response = requests.get(request_url)
         respose_json = response.json()
         return Response(data=respose_json, status=status.HTTP_200_OK)
     except:
@@ -56,6 +60,21 @@ def put_request(url, route, param, data):
         }
         return Response(data=json.dumps(response_json), 
                         status=status.HTTP_200_OK)
+    except:
+        respose_json = {
+            'error': 'Error no servidor'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def post_request(url, route, data):
+    try:
+        requests.post(url + route, data=data)
+        response_json = {
+            "success":"Cadastrado com sucesso"
+        }
+        return Response(data=json.dumps(response_json), 
+                        status=status.HTTP_201_CREATED)
     except:
         respose_json = {
             'error': 'Error no servidor'
