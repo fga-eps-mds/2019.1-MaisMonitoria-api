@@ -11,6 +11,9 @@ services:
       - "8000:8000"
     networks:
       - api-backend
+    environment:
+      - PATH_USER=${PATH_USER}
+      - FIREBASE_KEY=${FIREBASE_KEY}
 
 networks:
   api-backend:

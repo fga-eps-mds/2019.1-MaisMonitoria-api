@@ -1,56 +1,63 @@
-from django.shortcuts import render
-from rest_framework import generics
+from api.utils import verify_auth, get_request, put_request, post_request, registry_auth
 from rest_framework.decorators import api_view
-from rest_framework.status import (
-    HTTP_403_FORBIDDEN,
-    HTTP_200_OK,
-    HTTP_404_NOT_FOUND,
-    HTTP_400_BAD_REQUEST,
-    HTTP_500_INTERNAL_SERVER_ERROR
-)
 from rest_framework.response import Response
+from django.shortcuts import render
+from rest_framework import status
+
 import requests
 import json
 import os
 
-
-import firebase_admin
-from firebase_admin import auth
-from firebase_admin import credentials
-
-# Initialize the default app
-#cred = credentials.Certificate('serviceAccountKey.json')
-#default_app = firebase_admin.initialize_app(cred)
+URL = 'http://api-monitoria:8001/'
+ROUTE = 'user/'
 
 @api_view(["POST"])
 def get_user(request):
-    ## Verificação do token
-    #decoded_token = auth.verify_id_token(request.data['access_token'])
-    #uid_json = {"id": decoded_token['uid'], "name": decoded_token['name']}
-    
-    #id = json.dumps(uid_json)
-    try:
-        response = requests.get('http://api-monitoria:8001' + '/user/'+ 
-                                    str(request.data.get("user_account_id"))+'/')
-        try:
-            respose_json = response.json()
-            return Response(data=respose_json, status=HTTP_200_OK)
-        except:
-            Response(response)
-    except:
-        return Response({'error': 'Error no servidor'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
+
+    if auth_response['is_auth']:
+        param = auth_response['id']
+        return get_request(URL, ROUTE, param)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["POST"])
 def update_user(request):
-    ## Verificação do token
-    #decoded_token = auth.verify_id_token(request.data['access_token'])
-    #uid_json = {"id": decoded_token['uid'], "name": decoded_token['name']}
-    
-    #id = json.dumps(uid_json)
-    try:
-        response = requests.put('http://api-monitoria:8001' + '/user/'+
-                            str(request.data.get("user_account_id"))+'/', data=request.data)
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
 
-        return Response({"Success":"Alterado com sucesso"}, status=HTTP_200_OK)
-    except:
-        return Response({'error': 'Error no servidor'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+    if auth_response['is_auth']:
+        param = auth_response['id']
+        data = request.data
+        data['user_account_id'] = auth_response['id']
+        del data['access_token']
+        return put_request(URL, ROUTE, param, data)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def create_user(request):
+    token = request.data['access_token']
+    auth_response = registry_auth(token)
+
+    if auth_response['is_auth']:
+        data = request.data
+        data['user_account_id'] = auth_response['id']
+        data['email'] = auth_response['email']
+        del data['access_token']
+        return post_request(URL, ROUTE, data)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
