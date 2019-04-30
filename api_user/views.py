@@ -31,9 +31,10 @@ def update_user(request):
     token = request.data['access_token']
     auth_response = verify_auth(token)
 
-    if auth_response["is_auth"]:
+    if auth_response['is_auth']:
         param = auth_response['id']
         data = request.data
+        data['user_account_id'] = auth_response['id']
         del data['access_token']
         return put_request(URL, ROUTE, param, data)
     else:
