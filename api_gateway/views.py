@@ -10,7 +10,6 @@ import os
 
 URL = 'http://api-monitoria:8001/'
 ROUTE = 'tutoring/'
-MONITOR_ROUTE = 'user/'
 
 @api_view(["POST"])
 def all_tutoring(request):
@@ -48,7 +47,7 @@ def create_tutoring(request):
 
     if auth_response['is_auth']:
         data = request.data
-        data['monitor'] = URL + MONITOR_ROUTE + auth_response['id'] + '/'
+        data['monitor'] = auth_response['id']
         del data['access_token']
         return post_request(URL, ROUTE, data)
     else:
@@ -66,7 +65,7 @@ def update_tutoring(request):
     if auth_response["is_auth"]:
         param = str(request.data['id_tutoring_session'])
         data = request.data
-        data['monitor'] = URL + MONITOR_ROUTE + auth_response['id'] + '/'
+        data['monitor'] = auth_response['id']
         del data['access_token']
         return put_request(URL, ROUTE, param, data)
     else:
