@@ -26,6 +26,16 @@ def all_tutoring(request):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["POST"])
+def search_tutoring(request):
+    param = str(request.data['search'])
+    route = ROUTE+'?search='+param
+    
+    return get_request(URL,route)
+
+
+
+
+@api_view(["POST"])
 def get_tutoring(request):
     token = request.data['access_token']
     auth_response = verify_auth(token)
