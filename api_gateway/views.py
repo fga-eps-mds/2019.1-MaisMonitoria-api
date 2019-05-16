@@ -25,14 +25,22 @@ def all_tutoring(request):
         return Response(data=json.dumps(respose_json), 
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(["POST"])
 def search_tutoring(request):
-    param = str(request.data['search'])
-    route = ROUTE+'?search='+param
-    
-    return get_request(URL,route)
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
 
-
+    if auth_response['is_auth']:
+        param = str(request.data['search'])
+        route = ROUTE+'?search='+param
+        return get_request(URL,route)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])
