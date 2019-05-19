@@ -67,9 +67,13 @@ def put_request(url, route, param, data):
         return Response(data=json.dumps(respose_json), 
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def post_request(url, route, data):
+def post_request(url, route, data, photo=None):
     try:
-        requests.post(url + route, data=data)
+        if photo:
+            requests.post(url + route, data=data, files=photo)
+        else:
+            requests.post(url + route, data=data)
+            
         response_json = {
             "success":"Cadastrado com sucesso"
         }
