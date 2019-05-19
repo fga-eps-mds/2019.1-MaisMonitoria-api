@@ -33,9 +33,18 @@ def update_user(request):
 
     if auth_response['is_auth']:
         param = auth_response['id']
-        data = request.data
+        data = request.data.copy()
         data['user_account_id'] = auth_response['id']
         del data['access_token']
+
+        if data['photo'] != 'null': 
+            photo = {}
+            photo['photo'] = (request.data['photo'].name, request.data['photo'].file.getvalue())
+            del data['photo']
+
+            return put_request(URL, ROUTE, param, data, photo)
+        
+        del data['photo']
         return put_request(URL, ROUTE, param, data)
     else:
         respose_json = {

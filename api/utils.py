@@ -52,9 +52,13 @@ def get_request(url, route, param=None):
         }
         return Response(data=json.dumps(respose_json), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def put_request(url, route, param, data):
+def put_request(url, route, param, data, photo=None):
     try:
-        requests.put(url + route + param + '/', data=data)
+        if photo:
+            requests.put(url + route + param + '/', data=data, files=photo)
+        else:
+            requests.put(url + route + param + '/', data=data)
+
         response_json = {
             "success":"Alterado com sucesso"
         }
