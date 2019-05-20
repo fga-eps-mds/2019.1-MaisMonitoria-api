@@ -11,13 +11,17 @@ class MonitoringRedirectTests(APITestCase):
         self.valid_payload = {
             'access_token': '123',            
         }
+        self.valid_payload_get_tutoring = {
+             'access_token': '123',
+             'id_tutoring_session': '3'
+        }
 
         self.invalid_payload = {
             'name': ''
         }
 
         self.valid_payload_search={
-            'access_token': '.|.',
+            'access_token': '123',
             'search': 'lola'
         }
 
@@ -26,7 +30,7 @@ class MonitoringRedirectTests(APITestCase):
             'search':'asd'
         }
 
-    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'trollado' }))
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
     @requests_mock.Mocker(kw='mock')
     def test_search_tutoring(self, **kwargs):
         request_url = 'http://api-monitoria:8001/tutoring/?search=lola'
@@ -41,7 +45,7 @@ class MonitoringRedirectTests(APITestCase):
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['teste'], "resposta")
 
-    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'trollado' }))
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
     @requests_mock.Mocker(kw='mock')
     def test_all_tutoring(self, **kwargs):
         api_url = '/all_tutoring/'
@@ -66,19 +70,31 @@ class MonitoringRedirectTests(APITestCase):
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data, data)
 
-#     @requests_mock.Mocker(kw='mock')
-#     def test_get_tutoring(self, **kwargs):
-#         id = self.valid_payload
-#         api_url = '/get_tutoring/'
-#         request_url = 'http://api-monitoria:8001/tutoring/1/'
 
-#         status = HTTP_200_OK
-#         data = {'Teste': 'teste'}
-#         kwargs['mock'].get(request_url,text = json.dumps(data))
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
+    @requests_mock.Mocker(kw='mock')
+    def test_get_tutoring(self, **kwargs):
+        param = self.valid_payload_get_tutoring
+        api_url = '/get_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/3/'
 
-#         response = self.client.post(api_url,id)
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data['Teste'] ,'teste'  )
+        request_status = status.HTTP_200_OK
+        data = {
+                    "monitor": "deSLYBKUgfa21j1cuOq1XGKLGR23",
+                    "id_tutoring_session": 3,
+                    "name": "erererree",
+                    "subject": "rerererew",
+                    "applicants": [],
+                    "description": "werwrerwrew",
+                    "status_tutoring_session": False,
+                    "create_date": "2019-05-12T23:12:35.180873Z",
+                    "accepted_applicants": []
+                }
+        kwargs['mock'].get(request_url,text = json.dumps(data))
+
+        response = self.client.post(api_url,param)
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['name'] ,'erererree' )
 
 #     def teste_error_get_tutoring(self, **kwargs):
 #         id = self.valid_payload
