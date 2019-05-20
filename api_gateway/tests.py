@@ -96,15 +96,17 @@ class MonitoringRedirectTests(APITestCase):
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['name'] ,'erererree' )
 
-#     def teste_error_get_tutoring(self, **kwargs):
-#         id = self.valid_payload
-#         api_url = '/get_tutoring/'
 
-#         status = HTTP_500_INTERNAL_SERVER_ERROR
-#         data = {'error': 'Error no servidor'} 
-#         response = self.client.post(api_url,id)
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data ,data  )
+    def teste_error_get_tutoring(self, **kwargs):
+        id = self.valid_payload
+        api_url = '/get_tutoring/'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        
+        response = self.client.post(api_url, id)
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data, data)
         
 #     @requests_mock.Mocker(kw= 'mock')    
 #     def teste_delete_tutoring(self, **kwargs):
