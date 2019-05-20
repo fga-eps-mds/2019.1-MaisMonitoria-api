@@ -59,7 +59,7 @@ class MonitoringRedirectTests(APITestCase):
     def test_error_all_tutoring(self, **kwargs):
         api_url = '/all_tutoring/'
         request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
-        data = {'error': 'Falha de autenticação'}
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
 
         response = self.client.post(api_url,self.valid_payload)
         
