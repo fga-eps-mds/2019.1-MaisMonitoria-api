@@ -1,55 +1,60 @@
-from api_gateway.views import all_tutoring
-import requests_mock
 from rest_framework.test import APITestCase
+from api_gateway.views import all_tutoring
+from rest_framework import status 
+import firebase_admin
+import requests_mock
 import json
-import unittest
+import mock
 
-from rest_framework.status import (
-    HTTP_403_FORBIDDEN,
-    HTTP_200_OK,
-    HTTP_404_NOT_FOUND,
-    HTTP_400_BAD_REQUEST,
-    HTTP_500_INTERNAL_SERVER_ERROR
-)
-
-class MonitoringRedirectTests(APITestCase, unittest.TestCase):
+class MonitoringRedirectTests(APITestCase):
     def setUp(self):
         self.valid_payload = {
-            'id_tutoring_session': '1'
+            'access_token': '123',            
         }
 
         self.invalid_payload = {
             'name': ''
         }
 
-
         self.valid_payload_search={
-            'access_token': "eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyZjBiNDZjYjc1OTBjNzRmNTNhYzdhOWUwY2IxYzAzMjRlY2RkNzUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbWFpc21vbml0b3JpYS1mZTMxYyIsImF1ZCI6Im1haXNtb25pdG9yaWEtZmUzMWMiLCJhdXRoX3RpbWUiOjE1NTgyOTc4NzYsInVzZXJfaWQiOiI2RFFzY1pkdnZrZmdVbkNXajRhbGVFQm1qaEUzIiwic3ViIjoiNkRRc2NaZHZ2a2ZnVW5DV2o0YWxlRUJtamhFMyIsImlhdCI6MTU1ODMwMTk5MCwiZXhwIjoxNTU4MzA1NTkwLCJlbWFpbCI6IjEyMzRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbIjEyMzRAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.rFLldBTlgtsdZ1SCseFGDSdmshNP7dCFxr8vlRRcbhfLTYm8iEHTIjqW3yRnxe_SUB-nzFegJ6_YBAAoTRwsvqT6YQP3vgnDa4GSGi8LfgnAzUnCNUOu84QzM4T6WSxFgjOu-5h2VnZgFhFgq2u2F5ql6PfJOyA5G2hnr2rosqcX_hB2e7tQbzHortQtaHuat-K-rZQGTNaa9-4EpKRlSVw1EhAeThEDierleUhhp9KP5iHNcPvc5Xa-KE6os3XMyspuYftljRcUc9ZgaP--ExY-H0BBchMYCaxBYlIj_ZISI2A-Ijo_SyUB74tX5o18xaPeYUYx5kpK22HhwM9LLQ",
-            'search': ""
+            'access_token': '.|.',
+            'search': 'lola'
         }
+
         self.invalid_payload_search ={
             'access_token': '123',
             'search':'asd'
         }
 
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'trollado' }))
+    @requests_mock.Mocker(kw='mock')
+    def test_search_tutoring(self, **kwargs):
+        request_url = 'http://api-monitoria:8001/tutoring/?search=lola'
+        search = self.valid_payload_search
+        api_url = '/search_tutoring/'
+        data = {"teste":"resposta"}
+        request_status = status.HTTP_200_OK
 
+        kwargs['mock'].get(request_url, text= json.dumps(data))
+        response = self.client.post(api_url, search)
+        
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['teste'], "resposta")
 
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'trollado' }))
+    @requests_mock.Mocker(kw='mock')
+    def test_all_tutoring(self, **kwargs):
+        api_url = '/all_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/'
+        request_status = status.HTTP_200_OK
+        data = {"Teste": "teste"}
 
+        kwargs['mock'].get(request_url, text=json.dumps(data))
 
+        response = self.client.post(api_url, self.valid_payload)
 
-#     @requests_mock.Mocker(kw='mock')
-#     def test_all_tutoring(self, **kwargs):
-#         api_url = '/all_tutoring/'
-#         request_url = 'http://api-monitoria:8001/tutoring/'
-#         status = HTTP_200_OK
-#         data = {"Teste": "teste"}
-
-#         kwargs['mock'].get(request_url, text=json.dumps(data))
-
-#         response = self.client.get(api_url)
-
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data['Teste'], "teste")
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['Teste'], "teste")
 
 #     def test_error_all_tutoring(self, **kwargs):
 #         api_url = '/all_tutoring/'
@@ -153,17 +158,6 @@ class MonitoringRedirectTests(APITestCase, unittest.TestCase):
 #         self.assertEqual(response.status_code, status)
 #         self.assertEqual(response.data, data)
 
-    @requests_mock.Mocker(kw='mock')
-    def test_search_tutoring(self, **kwargs):
-        search = self.valid_payload_search
-        api_url = '/search_tutoring/'
-        request_url= 'http://api-monitoria:8001/tutoring/?search='
-        status = HTTP_200_OK
-        data = {"teste":"resposta"}
-        kwargs['mock'].get(request_url, text= json.dumps(data))
-        response = self.client.post(api_url,search)
-        self.assertEqual(response.status_code, status)
-        self.assertEqual(response.data['teste'], "resposta")
 
 
 
