@@ -33,8 +33,8 @@ def search_tutoring(request):
 
     if auth_response['is_auth']:
         param = str(request.data['search'])
-        route = ROUTE+'?search='+param
-        return get_request(URL,route)
+        param = '?search=' + param
+        return get_request(URL, ROUTE, param)
     else:
         respose_json = {
             'error': 'Falha de autenticação'
