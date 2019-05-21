@@ -40,7 +40,7 @@ def registry_auth(token):
 def get_request(url, route, param=None):
     try:
         if param is not None:
-            request_url = url + route + param + '/'
+            request_url = url + route + param
         else:
             request_url = url + route
         response = requests.get(request_url)
