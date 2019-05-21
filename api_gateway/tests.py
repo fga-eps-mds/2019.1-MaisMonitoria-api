@@ -1,73 +1,112 @@
-# from api_gateway.views import all_tutoring
-# import requests_mock
-# from rest_framework.test import APITestCase
-# import json
+from rest_framework.test import APITestCase
+from api_gateway.views import all_tutoring
+from rest_framework import status 
+import firebase_admin
+import requests_mock
+import json
+import mock
 
-# from rest_framework.status import (
-#     HTTP_403_FORBIDDEN,
-#     HTTP_200_OK,
-#     HTTP_404_NOT_FOUND,
-#     HTTP_400_BAD_REQUEST,
-#     HTTP_500_INTERNAL_SERVER_ERROR
-# )
+class MonitoringRedirectTests(APITestCase):
+    def setUp(self):
+        self.valid_payload = {
+            'access_token': '123',            
+        }
+        self.valid_payload_get_tutoring = {
+             'access_token': '123',
+             'id_tutoring_session': '3'
+        }
 
-# class MonitoringRedirectTests(APITestCase):
-#     def setUp(self):
-#         self.valid_payload = {
-#             'id_tutoring_session': '1'
-#         }
+        self.invalid_payload = {
+            'name': ''
+        }
 
-#         self.invalid_payload = {
-#             'name': ''
-#         }
-    
-#     @requests_mock.Mocker(kw='mock')
-#     def test_all_tutoring(self, **kwargs):
-#         api_url = '/all_tutoring/'
-#         request_url = 'http://api-monitoria:8001/tutoring/'
-#         status = HTTP_200_OK
-#         data = {"Teste": "teste"}
+        self.valid_payload_search={
+            'access_token': '123',
+            'search': 'lola'
+        }
 
-#         kwargs['mock'].get(request_url, text=json.dumps(data))
+        self.invalid_payload_search ={
+            'access_token': '123',
+            'search':'asd'
+        }
 
-#         response = self.client.get(api_url)
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
+    @requests_mock.Mocker(kw='mock')
+    def test_search_tutoring(self, **kwargs):
+        request_url = 'http://api-monitoria:8001/tutoring/?search=lola'
+        search = self.valid_payload_search
+        api_url = '/search_tutoring/'
+        data = {"teste":"resposta"}
+        request_status = status.HTTP_200_OK
 
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data['Teste'], "teste")
+        kwargs['mock'].get(request_url, text= json.dumps(data))
+        response = self.client.post(api_url, search)
+        
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['teste'], "resposta")
 
-#     def test_error_all_tutoring(self, **kwargs):
-#         api_url = '/all_tutoring/'
-#         status = HTTP_500_INTERNAL_SERVER_ERROR
-#         data = {'error': 'Error no servidor'}
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
+    @requests_mock.Mocker(kw='mock')
+    def test_all_tutoring(self, **kwargs):
+        api_url = '/all_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/'
+        request_status = status.HTTP_200_OK
+        data = {"Teste": "teste"}
 
-#         response = self.client.get(api_url)
+        kwargs['mock'].get(request_url, text=json.dumps(data))
 
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data, data)
+        response = self.client.post(api_url, self.valid_payload)
 
-#     @requests_mock.Mocker(kw='mock')
-#     def test_get_tutoring(self, **kwargs):
-#         id = self.valid_payload
-#         api_url = '/get_tutoring/'
-#         request_url = 'http://api-monitoria:8001/tutoring/1/'
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['Teste'], "teste")
 
-#         status = HTTP_200_OK
-#         data = {'Teste': 'teste'}
-#         kwargs['mock'].get(request_url,text = json.dumps(data))
+    def test_error_all_tutoring(self, **kwargs):
+        api_url = '/all_tutoring/'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
 
-#         response = self.client.post(api_url,id)
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data['Teste'] ,'teste'  )
+        response = self.client.post(api_url,self.valid_payload)
+        
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data, data)
 
-#     def teste_error_get_tutoring(self, **kwargs):
-#         id = self.valid_payload
-#         api_url = '/get_tutoring/'
 
-#         status = HTTP_500_INTERNAL_SERVER_ERROR
-#         data = {'error': 'Error no servidor'} 
-#         response = self.client.post(api_url,id)
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data ,data  )
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
+    @requests_mock.Mocker(kw='mock')
+    def test_get_tutoring(self, **kwargs):
+        param = self.valid_payload_get_tutoring
+        api_url = '/get_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/3'
+
+        request_status = status.HTTP_200_OK
+        data = {
+                    "monitor": "deSLYBKUgfa21j1cuOq1XGKLGR23",
+                    "id_tutoring_session": 3,
+                    "name": "erererree",
+                    "subject": "rerererew",
+                    "applicants": [],
+                    "description": "werwrerwrew",
+                    "status_tutoring_session": False,
+                    "create_date": "2019-05-12T23:12:35.180873Z",
+                    "accepted_applicants": []
+                }
+        kwargs['mock'].get(request_url,text = json.dumps(data))
+
+        response = self.client.post(api_url,param)
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['name'] ,'erererree' )
+
+
+    def teste_error_get_tutoring(self, **kwargs):
+        id = self.valid_payload
+        api_url = '/get_tutoring/'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        
+        response = self.client.post(api_url, id)
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data, data)
         
 #     @requests_mock.Mocker(kw= 'mock')    
 #     def teste_delete_tutoring(self, **kwargs):
@@ -136,3 +175,7 @@
 #         response = self.client.post(api_url, id)
 #         self.assertEqual(response.status_code, status)
 #         self.assertEqual(response.data, data)
+
+
+
+
