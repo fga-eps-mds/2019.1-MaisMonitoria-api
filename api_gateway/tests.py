@@ -76,7 +76,7 @@ class MonitoringRedirectTests(APITestCase):
     def test_get_tutoring(self, **kwargs):
         param = self.valid_payload_get_tutoring
         api_url = '/get_tutoring/'
-        request_url = 'http://api-monitoria:8001/tutoring/3/'
+        request_url = 'http://api-monitoria:8001/tutoring/3'
 
         request_status = status.HTTP_200_OK
         data = {
