@@ -25,7 +25,7 @@ class ApiUserRedirectTests(APITestCase):
         }
 
         self.invalid_payload = {
-            'user_account_id':''
+            'access_token':''
         }
    
     @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': '1','id':'1'}))
@@ -44,12 +44,11 @@ class ApiUserRedirectTests(APITestCase):
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['Teste'], "teste")
 
-#     def test_error_get_user(self, **kwargs):
-#         id = self.invalid_payload
-#         api_url = '/get_user/'
-#         status = HTTP_500_INTERNAL_SERVER_ERROR
-#         data = {'error': 'Error no servidor'}
-
-#         response = self.client.post(api_url, id)
-#         self.assertEqual(response.status_code, status)
-#         self.assertEqual(response.data, data)
+    def test_error_get_user(self, **kwargs):
+        request_id = self.invalid_payload
+        api_url = '/get_user/'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        response = self.client.post(api_url, request_id )
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data, data)
