@@ -92,3 +92,24 @@ def update_tutoring(request):
         }
         return Response(data=json.dumps(respose_json), 
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def like_tutoring(request):
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
+
+    if auth_response["is_auth"]:
+        route = 'like/'
+        data = request.data
+        data['user_that_likes']= auth_response['id']
+        del data['access_token']
+        return post_request(URL, route, data)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
