@@ -1,4 +1,4 @@
-from .views import all_tutoring, get_tutoring, create_tutoring, update_tutoring, search_tutoring
+from .views import all_tutoring, get_tutoring, create_tutoring, update_tutoring, search_tutoring, like_tutoring
 from django.urls import path
 
 urlpatterns = [
@@ -6,5 +6,6 @@ urlpatterns = [
     path('get_tutoring/', get_tutoring),
     path('create_tutoring/', create_tutoring),
     path('update_tutoring/', update_tutoring),
-    path('search_tutoring/', search_tutoring)
+    path('search_tutoring/', search_tutoring),
+    path('like_tutoring/', like_tutoring),
 ]
