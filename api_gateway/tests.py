@@ -191,11 +191,18 @@ class MonitoringRedirectTests(APITestCase):
         data= {'user_that_likes': '1',
                 'tutoring_session':'10'}
                
-
         kwargs['mock'].post(request_url,headers=data)
         response = self.client.post(api_url,param, format='json')
         self.assertEqual(response.status_code, request_status)
         
+
+    def test_error_like_tutoring(self):
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'  
+        param =  self.valid_payload_like              
+        api_url = "http://localhost:8000/like_tutoring/"
+
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.data, data)
 
        
 
