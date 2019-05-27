@@ -91,16 +91,17 @@ def post_request(url, route, data, photo=None):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def delete_request(url,route,param = None):
+def delete_request(url,route,param):
     try:
         if param:
+            
             requests.delete(url+route+param)
             response_json = {
-                "success":"Deletado com sucesso"
+                'success':'Deletado com sucesso'
             }
         else:
             response_json = {
-                "Error":"Parametro vazio"
+                'Error':'Parametro vazio'
             }
         return Response(data=json.dumps(response_json), 
                         status=status.HTTP_200_OK)
