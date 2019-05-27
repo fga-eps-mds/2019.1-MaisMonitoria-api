@@ -225,5 +225,11 @@ class MonitoringRedirectTests(APITestCase):
         self.assertEqual(response.status_code, request_status)
 
 
-
-
+    def test_error_delete_like(self, **kwargs):
+        param = self.valid_payload_like_delete
+        api_url = 'http://localhost:8000/like_delete/'
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        status_request=status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.status_code, status_request)
+        self.assertEqual(response.data, data)
