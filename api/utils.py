@@ -89,3 +89,27 @@ def post_request(url, route, data, photo=None):
         }
         return Response(data=json.dumps(respose_json), 
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def delete_request(url,route,param):
+    try:
+        if param:
+            
+            requests.delete(url+route+param)
+            response_json = {
+                'success':'Deletado com sucesso'
+            }
+        else:
+            response_json = {
+                'Error':'Parametro vazio'
+            }
+        return Response(data=json.dumps(response_json), 
+                        status=status.HTTP_200_OK)
+    except:
+        respose_json = {
+            'error': 'Error no servidor'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)        
+
+

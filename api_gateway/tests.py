@@ -29,6 +29,15 @@ class MonitoringRedirectTests(APITestCase):
             'access_token': '123',
             'search':'asd'
         }
+        self.valid_payload_like = {
+            'access_token': '123',
+            'tutoring_session':'10'
+        }
+
+        self.valid_payload_like_delete ={
+            'access_token':'1010',
+            'id_like': 2
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': 'yes' }))
     @requests_mock.Mocker(kw='mock')
@@ -176,6 +185,51 @@ class MonitoringRedirectTests(APITestCase):
 #         self.assertEqual(response.status_code, status)
 #         self.assertEqual(response.data, data)
 
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={'uid':'1'}))
+    @requests_mock.Mocker(kw='mock')
+    def test_like_tutoring(self, **kwargs):
+        api_url = "http://localhost:8000/like_tutoring/"
+        param =  self.valid_payload_like
+        request_url = 'http://api-monitoria:8001/like/'
+        request_status = status.HTTP_201_CREATED
+        data= {'user_that_likes': '1',
+                'tutoring_session':'10'}
+               
+        kwargs['mock'].post(request_url,headers=data)
+        response = self.client.post(api_url,param, format='json')
+        self.assertEqual(response.status_code, request_status)
+        
+
+    def test_error_like_tutoring(self):
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'  
+        param =  self.valid_payload_like              
+        api_url = "http://localhost:8000/like_tutoring/"
+
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.data, data)
+
+    
+    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={'uid':'yes'}))
+    @requests_mock.Mocker(kw='mock')
+    def test_delete_like(self, **kwargs):
+        param = self.valid_payload_like_delete
+        
+        api_url = 'http://localhost:8000/like_delete/'
+        request_url = 'http://api-monitoria:8001/like/2'
+        request_status = status.HTTP_200_OK
+        
+        kwargs['mock'].delete(request_url)
 
 
+        response = self.client.post(api_url,self.valid_payload_like_delete,format='json')
+        self.assertEqual(response.status_code, request_status)
 
+
+    def test_error_delete_like(self, **kwargs):
+        param = self.valid_payload_like_delete
+        api_url = 'http://localhost:8000/like_delete/'
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        status_request=status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.status_code, status_request)
+        self.assertEqual(response.data, data)

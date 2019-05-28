@@ -1,4 +1,4 @@
-from api.utils import verify_auth, get_request, put_request, post_request
+from api.utils import verify_auth, get_request, put_request, post_request, delete_request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render
@@ -92,3 +92,41 @@ def update_tutoring(request):
         }
         return Response(data=json.dumps(respose_json), 
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def like_tutoring(request):
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
+
+    if auth_response["is_auth"]:
+        route = 'like/'
+        data = request.data
+        data['user_that_likes']= auth_response['id']
+        del data['access_token']
+        return post_request(URL, route, data)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def delete_like(request):
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
+
+    if auth_response["is_auth"]:
+        route = 'like/'
+        param = str(request.data['id_like'])
+        return delete_request(URL,route,param)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json), 
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+
+
