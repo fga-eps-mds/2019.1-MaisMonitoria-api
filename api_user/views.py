@@ -83,7 +83,7 @@ def create_user(request):
 @api_view(["POST"])
 def get_monitor(request):
     token = request.data['access_token']
-    auth_response = registry_auth(token)
+    auth_response =  verify_auth(token)
 
     if auth_response['is_auth']:
         param = str(request.data['monitor_id'])
