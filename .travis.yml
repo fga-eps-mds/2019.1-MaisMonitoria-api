@@ -41,7 +41,7 @@ jobs:
         - make build
         - docker network create api-backend
         - make run-d
-        - docker-compose exec api_monitoria flake8 --ignore=E722
+        - docker-compose exec api_gateway flake8 --ignore=E722
     - stage: "Deploy image homolog"
       if: branch = develop
       script: bash ./scripts/deploy_homolog.sh
