@@ -1,47 +1,36 @@
 from rest_framework.test import APITestCase
-from api_gateway.views import all_tutoring
-from rest_framework import status 
-import firebase_admin
+from rest_framework import status
 import requests_mock
 import json
 import mock
 
-# from rest_framework.status import (
-#     HTTP_403_FORBIDDEN,
-#     HTTP_200_OK,
-#     HTTP_404_NOT_FOUND,
-#     HTTP_400_BAD_REQUEST,
-#     HTTP_500_INTERNAL_SERVER_ERROR
-# )
 
 class ApiUserRedirectTests(APITestCase):
     def setUp(self):
-        self.id={
+        self.id = {
             'id': '1',
-            
         }
+
         self.valid_payload = {
              'access_token': '123'
-
         }
 
         self.invalid_payload = {
-            'access_token':''
+            'access_token': ''
         }
-        self.valid_payload_teste={
+
+        self.valid_payload_teste = {
             'access_token': '123',
             'monitor_id': '1',
-
         }
-        
+
         self.invalid_payload_teste = {
-            'access_token':'',
+            'access_token': '',
             'monitor_id': '',
         }
 
-   
-
-    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': '1','id':'1'}))
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': '1', 'id': '1'}))
     @requests_mock.Mocker(kw='mock')
     def test_get_monitor(self, **kwargs):
         request_id = self.valid_payload_teste
@@ -52,7 +41,7 @@ class ApiUserRedirectTests(APITestCase):
 
         kwargs['mock'].get(request_url, text=json.dumps(data))
 
-        response = self.client.post(api_url,request_id)
+        response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['Teste'], "teste")
 
@@ -61,12 +50,12 @@ class ApiUserRedirectTests(APITestCase):
         api_url = '/get_monitor/'
         request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
-        response = self.client.post(api_url, request_id )
+        response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data, data)
 
-          
-    @mock.patch('firebase_admin.auth.verify_id_token', mock.Mock(return_value={ 'uid': '1','id':'1'}))
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': '1', 'id': '1'}))
     @requests_mock.Mocker(kw='mock')
     def test_get_user(self, **kwargs):
         request_id = self.valid_payload
@@ -77,7 +66,7 @@ class ApiUserRedirectTests(APITestCase):
 
         kwargs['mock'].get(request_url, text=json.dumps(data))
 
-        response = self.client.post(api_url,request_id)
+        response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['Teste'], "teste")
 
@@ -86,9 +75,6 @@ class ApiUserRedirectTests(APITestCase):
         api_url = '/get_user/'
         request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
-        response = self.client.post(api_url, request_id )
+        response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data, data)
-    
-
-    
