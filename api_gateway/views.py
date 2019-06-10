@@ -1,15 +1,13 @@
-from api.utils import verify_auth, get_request, put_request, post_request, delete_request
+from api.utils import verify_auth, get_request, delete_request
+from api.utils import put_request, post_request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import render
 from rest_framework import status
-
-import requests
 import json
-import os
 
 URL = 'http://api-monitoria:8001/'
 ROUTE = 'tutoring/'
+
 
 @api_view(["POST"])
 def all_tutoring(request):
@@ -22,7 +20,7 @@ def all_tutoring(request):
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -39,7 +37,7 @@ def search_tutoring(request):
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -55,8 +53,9 @@ def get_tutoring(request):
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(["POST"])
 def create_tutoring(request):
@@ -72,8 +71,9 @@ def create_tutoring(request):
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(["POST"])
 def update_tutoring(request):
@@ -90,7 +90,7 @@ def update_tutoring(request):
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -102,14 +102,14 @@ def like_tutoring(request):
     if auth_response["is_auth"]:
         route = 'like/'
         data = request.data
-        data['user_that_likes']= auth_response['id']
+        data['user_that_likes'] = auth_response['id']
         del data['access_token']
         return post_request(URL, route, data)
     else:
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -121,12 +121,10 @@ def delete_like(request):
     if auth_response["is_auth"]:
         route = 'like/'
         param = str(request.data['id_like'])
-        return delete_request(URL,route,param)
+        return delete_request(URL, route, param)
     else:
         respose_json = {
             'error': 'Falha de autenticação'
         }
-        return Response(data=json.dumps(respose_json), 
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
-
-
+        return Response(data=json.dumps(respose_json),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)

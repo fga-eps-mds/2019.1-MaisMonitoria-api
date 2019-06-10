@@ -1,4 +1,5 @@
-from .views import all_tutoring, get_tutoring, create_tutoring, update_tutoring, search_tutoring, like_tutoring, delete_like
+from .views import all_tutoring, get_tutoring, create_tutoring, delete_like
+from .views import update_tutoring, search_tutoring, like_tutoring
 from django.urls import path
 
 urlpatterns = [
