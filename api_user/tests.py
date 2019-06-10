@@ -12,7 +12,7 @@ class ApiUserRedirectTests(APITestCase):
         }
 
         self.valid_payload = {
-             'access_token': '123'
+            'access_token': '123'
         }
 
         self.invalid_payload = {

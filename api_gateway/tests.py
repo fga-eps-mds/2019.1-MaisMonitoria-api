@@ -12,8 +12,8 @@ class MonitoringRedirectTests(APITestCase):
         }
 
         self.valid_payload_get_tutoring = {
-             'access_token': '123',
-             'id_tutoring_session': '3'
+            'access_token': '123',
+            'id_tutoring_session': '3'
         }
 
         self.invalid_payload = {

@@ -11,18 +11,19 @@ FIREBASE_KEY = ast.literal_eval(FIREBASE_KEY)
 CRED = credentials.Certificate(FIREBASE_KEY)
 DEFAULT_APP = initialize_app(CRED)
 
+
 def verify_auth(token):
     try:
         decoded_token = auth.verify_id_token(token)
         response = {
-            'is_auth': True, 
+            'is_auth': True,
             'id': decoded_token['uid']
-        } 
+        }
         return response
     except:
         response = {'is_auth': False}
         return response
-    
+
 
 def registry_auth(token):
     try:
@@ -31,11 +32,12 @@ def registry_auth(token):
             'is_auth': True,
             'id': decoded_token['uid'],
             'email': decoded_token['email']
-        } 
+        }
         return response
     except:
         response = {'is_auth': False}
         return response
+
 
 def get_request(url, route, param=None):
     try:
@@ -52,6 +54,7 @@ def get_request(url, route, param=None):
         }
         return Response(data=json.dumps(respose_json), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 def put_request(url, route, param, data, photo=None):
     try:
         if photo:
@@ -60,16 +63,17 @@ def put_request(url, route, param, data, photo=None):
             requests.put(url + route + param + '/', data=data)
 
         response_json = {
-            "success":"Alterado com sucesso"
+            "success": "Alterado com sucesso"
         }
-        return Response(data=json.dumps(response_json), 
+        return Response(data=json.dumps(response_json),
                         status=status.HTTP_200_OK)
     except:
         respose_json = {
             'error': 'Error no servidor'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 def post_request(url, route, data, photo=None):
     try:
@@ -77,39 +81,36 @@ def post_request(url, route, data, photo=None):
             requests.post(url + route, data=data, files=photo)
         else:
             requests.post(url + route, data=data)
-            
+
         response_json = {
-            "success":"Cadastrado com sucesso"
+            "success": "Cadastrado com sucesso"
         }
-        return Response(data=json.dumps(response_json), 
+        return Response(data=json.dumps(response_json),
                         status=status.HTTP_201_CREATED)
     except:
         respose_json = {
             'error': 'Error no servidor'
         }
-        return Response(data=json.dumps(respose_json), 
+        return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def delete_request(url,route,param):
+def delete_request(url, route, param):
     try:
         if param:
-            
-            requests.delete(url+route+param)
+            requests.delete(url + route + param)
             response_json = {
-                'success':'Deletado com sucesso'
+                'success': 'Deletado com sucesso'
             }
         else:
             response_json = {
-                'Error':'Parametro vazio'
+                'Error': 'Parametro vazio'
             }
-        return Response(data=json.dumps(response_json), 
+        return Response(data=json.dumps(response_json),
                         status=status.HTTP_200_OK)
     except:
         respose_json = {
             'error': 'Error no servidor'
         }
-        return Response(data=json.dumps(respose_json), 
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)        
-
-
+        return Response(data=json.dumps(respose_json),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
