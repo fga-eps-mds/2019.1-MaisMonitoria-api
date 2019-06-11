@@ -9,7 +9,7 @@ class MonitoringRedirectTests(APITestCase):
     def setUp(self):
         self.valid_payload = {
             'access_token': '123',
-            'page':''            
+            'page': ''
         }
 
         self.valid_payload_get_tutoring = {

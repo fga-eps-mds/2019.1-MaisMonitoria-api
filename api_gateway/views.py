@@ -17,7 +17,7 @@ def all_tutoring(request):
 
     if auth_response['is_auth']:
         if page:
-            route = ROUTE+'?page='+str(page)
+            route = ROUTE + '?page=' + str(page)
             return get_request(URL, route)
         return get_request(URL, ROUTE)
     else:
