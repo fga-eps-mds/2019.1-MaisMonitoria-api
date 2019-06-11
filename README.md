@@ -5,6 +5,7 @@
 <a><img src="https://travis-ci.org/fga-eps-mds/2019.1-MaisMonitoria-api.svg?branch=develop"></a>
 <a><img src="https://codecov.io/gh/fga-eps-mds/2019.1-MaisMonitoria-api/branch/develop/graph/badge.svg"></a>
 <a><img src="https://img.shields.io/badge/license-GLP--3.0-red.svg"></a>
+<a><img src="https://api.codeclimate.com/v1/badges/665d0042be56d5003d39/maintainability"></a>
 </p>
 
 <h1 align="center"> +Monitoria </h1>
