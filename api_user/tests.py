@@ -95,3 +95,12 @@ class ApiUserRedirectTests(APITestCase):
 
         response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
+
+    def test_error_update_user(self, **kwargs):
+        request_id = self.valid_payload_update
+        api_url = '/update_user/'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        response = self.client.post(api_url, request_id)
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data, data)
