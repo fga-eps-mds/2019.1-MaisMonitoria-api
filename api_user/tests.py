@@ -28,6 +28,10 @@ class ApiUserRedirectTests(APITestCase):
             'access_token': '',
             'monitor_id': '',
         }
+        self.valid_payload_update = {
+            'access_token': '123',
+            'photo': 'null'
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': '1', 'id': '1'}))
@@ -78,3 +82,16 @@ class ApiUserRedirectTests(APITestCase):
         response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data, data)
+
+    @mock.patch('requests.put',
+                mock.Mock(return_value={'status_code': 'HTTP_200_OK'}))
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': '1', 'id': '1'}))
+    @requests_mock.Mocker(kw='mock')
+    def test_update_user(self, **kwargs):
+        request_id = self.valid_payload_update
+        api_url = '/update_user/'
+        request_status = status.HTTP_200_OK
+
+        response = self.client.post(api_url, request_id)
+        self.assertEqual(response.status_code, request_status)
