@@ -32,6 +32,12 @@ class ApiUserRedirectTests(APITestCase):
             'access_token': '123',
             'photo': 'null'
         }
+        self.valid_payload_create = {
+            'access_token': '123',
+            'photo': 'null',
+            'user_account_id': '4',
+            'email': 'test@test.com'
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': '1', 'id': '1'}))
@@ -104,3 +110,15 @@ class ApiUserRedirectTests(APITestCase):
         response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data, data)
+
+    @mock.patch('requests.post',
+                mock.Mock(return_value={'status_code': 'HTTP_201_CREATED'}))
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': '1', 'is_auth': True, 'email': 'teste'}))
+    @requests_mock.Mocker(kw='mock')
+    def test_create_user(self, **kwargs):
+        request_id = self.valid_payload_create
+        api_url = "http://localhost:8000/create_user/"
+        request_status = status.HTTP_201_CREATED
+        response = self.client.post(api_url, request_id)
+        self.assertEqual(response.status_code, request_status)
