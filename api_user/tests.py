@@ -122,3 +122,12 @@ class ApiUserRedirectTests(APITestCase):
         request_status = status.HTTP_201_CREATED
         response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
+
+    def test_error_create_user(self, **kwargs):
+        request_id = self.valid_payload_create
+        api_url = "http://localhost:8000/create_user/"
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, request_id)
+        self.assertEqual(response.data, data)
+        self.assertEqual(response.status_code, request_status)
