@@ -12,6 +12,11 @@ class MonitoringRedirectTests(APITestCase):
             'page': ''
         }
 
+        self.valid_payload_2 = {
+            'access_token': '123',
+            'page': '2'
+        }
+
         self.valid_payload_get_tutoring = {
             'access_token': '123',
             'id_tutoring_session': '3'
@@ -74,6 +79,17 @@ class MonitoringRedirectTests(APITestCase):
 
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['teste'], "resposta")
+
+    def test_error_search_tutoring(self, **kwargs):
+        search = self.valid_payload_search
+        api_url = '/search_tutoring/'
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        response = self.client.post(api_url, search)
+
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data, data)
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': 'yes'}))
@@ -230,3 +246,16 @@ class MonitoringRedirectTests(APITestCase):
         response = self.client.post(api_url, param, format='json')
         self.assertEqual(response.data, data)
         self.assertEqual(response.status_code, request_status)
+
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': 'yes'}))
+    @requests_mock.Mocker(kw='mock')
+    def test_2_all_tutoring2(self, **kwargs):
+        api_url = '/all_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/'
+        request_status = status.HTTP_200_OK
+        data = {"Teste": "teste"}
+        kwargs['mock'].get(request_url, text=json.dumps(data))
+        response = self.client.post(api_url, self.valid_payload_2)
+        self.assertEqual(response.status_code, request_status)
+        self.assertEqual(response.data['Teste'], "teste")
