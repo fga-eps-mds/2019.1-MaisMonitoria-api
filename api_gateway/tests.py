@@ -187,3 +187,13 @@ class MonitoringRedirectTests(APITestCase):
         request_status = status.HTTP_201_CREATED
         response = self.client.post(api_url, param, format='json')
         self.assertEqual(response.status_code, request_status)
+
+    @requests_mock.Mocker(kw='mock')
+    def test_error_create_tutoring(self, **kwargs):
+        api_url = "http://localhost:8000/create_tutoring/"
+        param = self.valid_payload_create
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.data, data)
+        self.assertEqual(response.status_code, request_status)
