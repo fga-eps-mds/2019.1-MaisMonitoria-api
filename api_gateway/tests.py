@@ -52,6 +52,12 @@ class MonitoringRedirectTests(APITestCase):
             'monitor': "asd",
             'name': 'teste'
         }
+        self.invalid_payload_update_tutoring = {
+            'access_token': '',
+            'id_tutoring_session': 2,
+            'monitor': "asd",
+            'name': 'teste'
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': 'yes'}))
@@ -214,4 +220,13 @@ class MonitoringRedirectTests(APITestCase):
         api_url = '/update_tutoring/'
         request_status = status.HTTP_200_OK
         response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.status_code, request_status)
+
+    def test_error_update_tutoring(self, **kwargs):
+        param = self.invalid_payload_update_tutoring
+        api_url = '/update_tutoring/'
+        data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
+        request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.data, data)
         self.assertEqual(response.status_code, request_status)
