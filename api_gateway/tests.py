@@ -40,6 +40,12 @@ class MonitoringRedirectTests(APITestCase):
             'access_token': '1010',
             'id_like': 2
         }
+        self.valid_payload_create = {
+            'access_token': 'asdsd',
+            'name': 'teste',
+            'subject': 'teste',
+            'description': 'teste',
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': 'yes'}))
@@ -169,3 +175,15 @@ class MonitoringRedirectTests(APITestCase):
 
         self.assertEqual(response.status_code, status_request)
         self.assertEqual(response.data, data)
+
+    @mock.patch('requests.post',
+                mock.Mock(return_value={'status_code': 'HTTP_201_CREATED'}))
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': '1', 'is_auth': True}))
+    @requests_mock.Mocker(kw='mock')
+    def test_create_tutoring(self, **kwargs):
+        api_url = "http://localhost:8000/create_tutoring/"
+        param = self.valid_payload_create
+        request_status = status.HTTP_201_CREATED
+        response = self.client.post(api_url, param, format='json')
+        self.assertEqual(response.status_code, request_status)
