@@ -23,3 +23,6 @@ run-dc-tests:
 	docker network create api-backend 
 	docker-compose -f docker-compose.yml build
 	docker-compose -f docker-compose.yml up -d
+
+pep:
+	docker-compose exec api_gateway flake8 --ignore=E722
