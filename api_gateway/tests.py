@@ -46,6 +46,12 @@ class MonitoringRedirectTests(APITestCase):
             'subject': 'teste',
             'description': 'teste',
         }
+        self.valid_payload_update_tutoring = {
+            'access_token': '1010',
+            'id_tutoring_session': 2,
+            'monitor': "asd",
+            'name': 'teste'
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': 'yes'}))
@@ -196,4 +202,16 @@ class MonitoringRedirectTests(APITestCase):
         request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = self.client.post(api_url, param, format='json')
         self.assertEqual(response.data, data)
+        self.assertEqual(response.status_code, request_status)
+
+    @mock.patch('requests.put',
+                mock.Mock(return_value={'status_code': 'HTTP_200_OK'}))
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': '1', 'is_auth': True}))
+    @requests_mock.Mocker(kw='mock')
+    def test_update_tutoring(self, **kwargs):
+        param = self.valid_payload_update_tutoring
+        api_url = '/update_tutoring/'
+        request_status = status.HTTP_200_OK
+        response = self.client.post(api_url, param, format='json')
         self.assertEqual(response.status_code, request_status)
