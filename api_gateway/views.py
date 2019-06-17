@@ -132,3 +132,19 @@ def delete_like(request):
         }
         return Response(data=json.dumps(respose_json),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def delete_tutoring(request):
+    token = request.data['access_token']
+    auth_response = verify_auth(token)
+
+    if auth_response["is_auth"]:
+        param = str(request.data['id_tutoring'])
+        return delete_request(URL, ROUTE, param)
+    else:
+        respose_json = {
+            'error': 'Falha de autenticação'
+        }
+        return Response(data=json.dumps(respose_json),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
