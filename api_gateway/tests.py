@@ -267,7 +267,7 @@ class MonitoringRedirectTests(APITestCase):
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': 'yes'}))
     @requests_mock.Mocker(kw='mock')
-    def test_delete_like(self, **kwargs):
+    def test_delete_monitoring(self, **kwargs):
         api_url = 'http://localhost:8000/delete_tutoring/'
         request_url = 'http://api-monitoria:8001/tutoring/1'
         request_status = status.HTTP_200_OK
