@@ -63,6 +63,10 @@ class MonitoringRedirectTests(APITestCase):
             'monitor': "asd",
             'name': 'teste'
         }
+        self.valid_payload_tutoring_delete = {
+            'access_token': '1010',
+            'id_tutoring': 1
+        }
 
     @mock.patch('firebase_admin.auth.verify_id_token',
                 mock.Mock(return_value={'uid': 'yes'}))
@@ -259,3 +263,16 @@ class MonitoringRedirectTests(APITestCase):
         response = self.client.post(api_url, self.valid_payload_2)
         self.assertEqual(response.status_code, request_status)
         self.assertEqual(response.data['Teste'], "teste")
+
+    @mock.patch('firebase_admin.auth.verify_id_token',
+                mock.Mock(return_value={'uid': 'yes'}))
+    @requests_mock.Mocker(kw='mock')
+    def test_delete_like(self, **kwargs):
+        api_url = 'http://localhost:8000/delete_tutoring/'
+        request_url = 'http://api-monitoria:8001/tutoring/1'
+        request_status = status.HTTP_200_OK
+
+        kwargs['mock'].delete(request_url)
+        response = self.client.post(api_url, self.valid_payload_tutoring_delete, format='json')
+
+        self.assertEqual(response.status_code, request_status)
