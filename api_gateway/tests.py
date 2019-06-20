@@ -3,6 +3,7 @@ from rest_framework import status
 import requests_mock
 import json
 import mock
+import os
 
 
 class MonitoringRedirectTests(APITestCase):
