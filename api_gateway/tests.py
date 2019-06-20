@@ -76,7 +76,7 @@ class MonitoringRedirectTests(APITestCase):
                 mock.Mock(return_value={'uid': 'yes'}))
     @requests_mock.Mocker(kw='mock')
     def test_search_tutoring(self, **kwargs):
-        request_url = 'http://api-monitoria:8001/tutoring/?search=lola'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/tutoring/?search=lola'
         search = self.valid_payload_search
         api_url = '/search_tutoring/'
         data = {"teste": "resposta"}
@@ -104,7 +104,7 @@ class MonitoringRedirectTests(APITestCase):
     @requests_mock.Mocker(kw='mock')
     def test_all_tutoring(self, **kwargs):
         api_url = '/all_tutoring/'
-        request_url = 'http://api-monitoria:8001/tutoring/'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/tutoring/'
         request_status = status.HTTP_200_OK
         data = {"Teste": "teste"}
 
@@ -131,7 +131,7 @@ class MonitoringRedirectTests(APITestCase):
     def test_get_tutoring(self, **kwargs):
         param = self.valid_payload_get_tutoring
         api_url = '/get_tutoring/'
-        request_url = 'http://api-monitoria:8001/tutoring/3'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/tutoring/3'
 
         request_status = status.HTTP_200_OK
         data = {
@@ -166,9 +166,9 @@ class MonitoringRedirectTests(APITestCase):
                 mock.Mock(return_value={'uid': '1'}))
     @requests_mock.Mocker(kw='mock')
     def test_like_tutoring(self, **kwargs):
-        api_url = "http://localhost:8000/like_tutoring/"
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/like_tutoring/"
         param = self.valid_payload_like
-        request_url = 'http://api-monitoria:8001/like/'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/like/'
         request_status = status.HTTP_201_CREATED
         data = {
             'user_that_likes': '1',
@@ -183,7 +183,7 @@ class MonitoringRedirectTests(APITestCase):
     def test_error_like_tutoring(self):
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
         param = self.valid_payload_like
-        api_url = "http://localhost:8000/like_tutoring/"
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/like_tutoring/"
 
         response = self.client.post(api_url, param, format='json')
 
@@ -193,8 +193,8 @@ class MonitoringRedirectTests(APITestCase):
                 mock.Mock(return_value={'uid': 'yes'}))
     @requests_mock.Mocker(kw='mock')
     def test_delete_like(self, **kwargs):
-        api_url = 'http://localhost:8000/like_delete/'
-        request_url = 'http://api-monitoria:8001/like/2'
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/like_delete/'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/like/2'
         request_status = status.HTTP_200_OK
 
         kwargs['mock'].delete(request_url)
@@ -204,7 +204,7 @@ class MonitoringRedirectTests(APITestCase):
 
     def test_error_delete_like(self, **kwargs):
         param = self.valid_payload_like_delete
-        api_url = 'http://localhost:8000/like_delete/'
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/like_delete/'
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
         status_request = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = self.client.post(api_url, param, format='json')
@@ -218,7 +218,7 @@ class MonitoringRedirectTests(APITestCase):
                 mock.Mock(return_value={'uid': '1', 'is_auth': True}))
     @requests_mock.Mocker(kw='mock')
     def test_create_tutoring(self, **kwargs):
-        api_url = "http://localhost:8000/create_tutoring/"
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/create_tutoring/"
         param = self.valid_payload_create
         request_status = status.HTTP_201_CREATED
         response = self.client.post(api_url, param, format='json')
@@ -226,7 +226,7 @@ class MonitoringRedirectTests(APITestCase):
 
     @requests_mock.Mocker(kw='mock')
     def test_error_create_tutoring(self, **kwargs):
-        api_url = "http://localhost:8000/create_tutoring/"
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/create_tutoring/"
         param = self.valid_payload_create
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
         request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -260,7 +260,7 @@ class MonitoringRedirectTests(APITestCase):
     @requests_mock.Mocker(kw='mock')
     def test_2_all_tutoring2(self, **kwargs):
         api_url = '/all_tutoring/'
-        request_url = 'http://api-monitoria:8001/tutoring/'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/tutoring/'
         request_status = status.HTTP_200_OK
         data = {"Teste": "teste"}
         kwargs['mock'].get(request_url, text=json.dumps(data))
@@ -272,8 +272,8 @@ class MonitoringRedirectTests(APITestCase):
                 mock.Mock(return_value={'uid': 'yes'}))
     @requests_mock.Mocker(kw='mock')
     def test_delete_monitoring(self, **kwargs):
-        api_url = 'http://localhost:8000/delete_tutoring/'
-        request_url = 'http://api-monitoria:8001/tutoring/1'
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/delete_tutoring/'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/tutoring/1'
         request_status = status.HTTP_200_OK
 
         kwargs['mock'].delete(request_url)
@@ -283,7 +283,7 @@ class MonitoringRedirectTests(APITestCase):
 
     def test_error_delete_monitoring(self, **kwargs):
         param = self.invalid_payload_tutoring_delete
-        api_url = 'http://localhost:8000/delete_tutoring/'
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/delete_tutoring/'
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
         status_request = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = self.client.post(api_url, param, format='json')

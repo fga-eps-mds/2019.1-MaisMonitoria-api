@@ -45,7 +45,7 @@ class ApiUserRedirectTests(APITestCase):
     def test_get_monitor(self, **kwargs):
         request_id = self.valid_payload_teste
         api_url = '/get_monitor/'
-        request_url = 'http://api-monitoria:8001/user/1'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/user/1'
         request_status = status.HTTP_200_OK
         data = {"Teste": "teste"}
 
@@ -70,7 +70,7 @@ class ApiUserRedirectTests(APITestCase):
     def test_get_user(self, **kwargs):
         request_id = self.valid_payload
         api_url = '/get_user/'
-        request_url = 'http://api-monitoria:8001/user/1'
+        request_url = os.getenv('URL_SERVICE_MONITORIA')+'/user/1'
         request_status = status.HTTP_200_OK
         data = {"Teste": "teste"}
 
@@ -118,14 +118,14 @@ class ApiUserRedirectTests(APITestCase):
     @requests_mock.Mocker(kw='mock')
     def test_create_user(self, **kwargs):
         request_id = self.valid_payload_create
-        api_url = "http://localhost:8000/create_user/"
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/create_user/"
         request_status = status.HTTP_201_CREATED
         response = self.client.post(api_url, request_id)
         self.assertEqual(response.status_code, request_status)
 
     def test_error_create_user(self, **kwargs):
         request_id = self.valid_payload_create
-        api_url = "http://localhost:8000/create_user/"
+        api_url = os.getenv('URL_SERVICE_MONITORIA')+'/create_user/"
         data = '{"error": "Falha de autentica\\u00e7\\u00e3o"}'
         request_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = self.client.post(api_url, request_id)
