@@ -4,8 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
+import os
 
-URL = 'http://api-monitoria:8001/'
+URL = os.getenv('URL_SERVICE_MONITORIA')
 ROUTE = 'tutoring/'
 
 
