@@ -1,5 +1,10 @@
 sudo: required
 
+language: python
+
+python:
+  - "3.6"
+
 services:
   - docker
 
@@ -8,9 +13,10 @@ env:
 
 stages:
   - Unit test
+  - Style sheet
   - Deploy image homolog
   - Deploy image prodution
-    
+  - Upgrade service
 notifications:
   slack: hora-da-hora:0nFQxr2PykmKhNkJ78xYJMOP
 
@@ -28,14 +34,24 @@ jobs:
         - make run-dc-tests
         - make run-tests
         - make cov-tests
-        # - docker-compose exec api_gateway flake8
         - docker-compose exec api_gateway codecov -t ${CODECOV_TOKEN}
+    - stage: "Style sheet"
+      name: "Style sheet"
+      script:
+        - make build
+        - docker network create api-backend
+        - make run-d
+        - docker-compose exec api_gateway flake8 --ignore=E722
     - stage: "Deploy image homolog"
       if: branch = develop
       script: bash ./scripts/deploy_homolog.sh
     - stage: "Deploy image prodution"
       if: branch = master
       script: bash ./scripts/deploy_prod.sh
-
+    - stage: "Upgrade service"
+      name: "Upgrade service"
+      if: branch = develop
+      script: python ./scripts/upgrade.py
+    
 after_success:
   - docker-compose down
